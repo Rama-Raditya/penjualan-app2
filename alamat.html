@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Alamat - RamStore</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root{--accent:#ff7a18;--muted:#6b7280}
+    body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial;padding-top:56px}
+    main{padding:30px 20px;max-width:1200px;margin:0 auto;min-height:calc(100vh - 200px)}
+    main h2{font-size:2rem;font-weight:700;margin-bottom:24px;color:#1f2937}
+    main p{font-size:1rem;line-height:1.6;color:var(--muted);margin-bottom:16px}
+    .page-loader{position:fixed;inset:0;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;z-index:9999}
+  </style>
+</head>
+<body>
+  <div id="page-loader" class="page-loader">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Memuat…</span>
+    </div>
+  </div>
+  
+  <header class="site-header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <i class="bi bi-shop me-2"></i>RamStore
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAlt" aria-controls="navbarNavAlt" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAlt">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Beranda</a></li>
+            <li class="nav-item"><a class="nav-link active" href="alamat.html">Alamat</a></li>
+            <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
+            <li class="nav-item"><a class="nav-link" href="tentang.html">Tentang</a></li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item position-relative"><a class="nav-link" href="#"><i class="bi bi-cart3 me-1"></i>Keranjang <span class="cart-badge" id="cart-count">0</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <h2><i class="bi bi-geo-alt me-2"></i>Alamat Kami</h2>
+    <p><strong><i class="bi bi-house me-2"></i>Lokasi:</strong> Jl. Contoh No.1, Kota Contoh, Indonesia.</p>
+    <p><strong><i class="bi bi-clock me-2"></i>Jam Operasional:</strong> Senin–Sabtu, 09:00–17:00</p>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="page-loader.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+
+  <div id="site-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="page-loader.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
