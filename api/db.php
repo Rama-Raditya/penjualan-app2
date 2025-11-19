@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *"); // Izinkan akses dari mana saja (untuk
 $host = 'localhost';
 $user = 'root'; // User default XAMPP
 $pass = '';     // Password default XAMPP
-$db   = 'penjualan_db'; // Nama database yang Anda buat
+$db   = 'db_penjualan'; // Nama database yang Anda buat
 
 $conn = new mysqli($host, $user, $pass, $db);
 

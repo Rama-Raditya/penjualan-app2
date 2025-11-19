@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width,initial-scale=1" />
-	<title>Login - RamStore</title>
+	<title>Daftar - RamStore</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -28,12 +28,16 @@
 <body>
 	<div class="login-container">
 		<h1><i class="bi bi-shop me-2"></i>RamStore</h1>
-		<p>Login Admin</p>
+		<p>Daftar Admin</p>
 		
 		<div id="error-msg" class="login-error"></div>
 		<div id="success-msg" class="login-success"></div>
 		
-		<form id="login-form">
+		<form id="register-form">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
 			<div class="mb-3">
 				<label for="username" class="form-label">Username</label>
 				<input type="text" class="form-control" id="username" name="username" required>
@@ -43,15 +47,12 @@
 				<input type="password" class="form-control" id="password" name="password" required>
 			</div>
 			<button type="submit" class="btn-login">
-				<i class="bi bi-box-arrow-in-right me-2"></i>Login
+				<i class="bi bi-box-arrow-in-right me-2"></i>Daftar
 			</button>
 		</form>
 		
 		<div class="login-link">
-			<p>Belum punya akun? <a href="register.html">Daftar</a></p>
-		</div>
-		<div class="login-link">
-			<p>Demo: username: <strong>admin</strong> | password: <strong>admin123</strong></p>
+			<p>Sudah punya akun? <a href="login.html">Masuk</a></p>
 		</div>
 	</div>
 
