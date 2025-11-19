@@ -160,12 +160,20 @@ function generateWhatsAppMessage() {
 
 // Send to WhatsApp and save order
 function sendToWhatsApp() {
+	const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    
+	if (!user.id) {
+		alert('Anda harus login untuk melakukan checkout. Silakan login atau daftar terlebih dahulu.');
+		window.location.href = 'login.html';
+		return;
+	}
+
 	const message = generateWhatsAppMessage();
 	if (!message) return;
 
 	const encodedMessage = encodeURIComponent(message);
 	const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-	
+    
 	// Save order to localStorage before sending
 	const name = document.getElementById('customer-name').value.trim();
 	const phone = document.getElementById('customer-phone').value.trim();
@@ -177,6 +185,7 @@ function sendToWhatsApp() {
 
 	const orderSummary = {
 		customer: { name, phone, address, notes },
+		user: { id: user.id, username: user.username || null },
 		items: cart.map(item => {
 			const product = allProducts.find(p => p.id === item.id);
 			return {

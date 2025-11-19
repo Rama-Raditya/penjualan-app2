@@ -10,6 +10,9 @@ switch ($action) {
     case 'get_products':
         get_products($conn);
         break;
+    case 'get_users':
+        get_users($conn);
+        break;
     case 'get_product':
         get_product($conn);
         break;
@@ -193,4 +196,57 @@ function delete_product($conn) {
 }
 
 $conn->close();
+
+/**
+ * Mengambil semua user (jika tabel ada)
+ */
+function get_users($conn) {
+    // Cek apakah tabel users ada
+    $check = $conn->query("SHOW TABLES LIKE 'users'");
+    $users = [];
+    if ($check && $check->num_rows > 0) {
+        // Select all columns — map fields dynamically to be resilient to different schemas
+        $sql = "SELECT * FROM users ORDER BY id DESC";
+        $result = $conn->query($sql);
+        if ($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                // Determine best field names for common variants
+                $id = null;
+                if (isset($row['id'])) $id = intval($row['id']);
+                elseif (isset($row['user_id'])) $id = intval($row['user_id']);
+
+                $name = null;
+                foreach (['name','username','full_name','nama','user_name'] as $k) {
+                    if (isset($row[$k]) && $row[$k] !== '') { $name = $row[$k]; break; }
+                }
+
+                $email = null;
+                foreach (['email','user_email','email_address'] as $k) {
+                    if (isset($row[$k]) && $row[$k] !== '') { $email = $row[$k]; break; }
+                }
+
+                $phone = null;
+                foreach (['phone','telephone','phone_number','telepon'] as $k) {
+                    if (isset($row[$k]) && $row[$k] !== '') { $phone = $row[$k]; break; }
+                }
+
+                $joined = null;
+                foreach (['created_at','created','registered_at','joined','tanggal_daftar'] as $k) {
+                    if (isset($row[$k]) && $row[$k] !== '') { $joined = $row[$k]; break; }
+                }
+
+                $users[] = [
+                    'id' => $id,
+                    'name' => $name,
+                    'email' => $email,
+                    'phone' => $phone,
+                    'joined' => $joined
+                ];
+            }
+        }
+    }
+
+    // Kembalikan array (bisa kosong jika tabel tidak ditemukan atau kosong)
+    echo json_encode($users);
+}
 ?>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Kelola Users - RamStore</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+	<style>
+		:root{--accent:#ff7a18;--muted:#6b7280}
+		body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial}
+		.sidebar{width:250px;min-height:100vh;background:#fff;border-right:1px solid #e9ecef;position:fixed;left:0;top:0;overflow-y:auto}
+		.main-wrapper{margin-left:250px;width:calc(100% - 250px)}
+		.content{padding:28px}
+		.brand{padding:20px;border-bottom:1px solid #e9ecef;font-weight:700;display:flex;align-items:center;gap:10px}
+		.brand i{font-size:1.5rem;color:var(--accent)}
+		.nav{flex-direction:column}
+		.nav-link{color:#495057;text-decoration:none;padding:12px 16px;display:flex;align-items:center;gap:10px;transition:all 0.3s}
+		.nav-link:hover{background:#f3f4f6;color:var(--accent)}
+		.nav-link.active{background:linear-gradient(90deg,#ff7a18,#ff914d);color:#fff}
+		hr{margin:10px 0}
+		.card{border:none;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-radius:12px}
+		.table{font-size:0.9rem}
+		.table thead{background:#f8fafc}
+		.btn-icon{width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:6px}
+		.alert{border-radius:8px}
+		@media(max-width:768px){
+			.sidebar{width:100%;height:auto;position:static;border-right:none;border-bottom:1px solid #e9ecef}
+			.main-wrapper{margin-left:0;width:100%}
+		}
+	</style>
+</head>
+<body>
+	<div id="page-loader" class="page-loader" style="position:fixed;inset:0;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;z-index:9999">
+		<div class="spinner-border text-primary" role="status">
+			<span class="visually-hidden">Memuat…</span>
+		</div>
+	</div>
+
+	<aside class="sidebar">
+		<div class="brand">
+			<i class="bi bi-shop"></i>
+			<div>
+				<div style="font-size:1rem">RamStore</div>
+				<small class="text-muted">Admin Panel</small>
+			</div>
+		</div>
+		<nav class="nav p-3">
+			<a class="nav-link" href="dashboard.html">
+				<i class="bi bi-speedometer2"></i>Dashboard
+			</a>
+			<a class="nav-link" href="products.html">
+				<i class="bi bi-box-seam"></i>Produk
+			</a>
+			<a class="nav-link" href="admin-orders.html">
+				<i class="bi bi-receipt"></i>Pesanan
+			</a>
+			<a class="nav-link active" href="admin-users.html">
+				<i class="bi bi-people"></i>Users
+			</a>
+			<hr>
+			<a class="nav-link" href="index.html">
+				<i class="bi bi-house-door"></i>Lihat Toko
+			</a>
+			<a class="nav-link text-danger" href="#" id="logout-btn">
+				<i class="bi bi-box-arrow-right"></i>Logout
+			</a>
+		</nav>
+	</aside>
+
+	<div class="main-wrapper">
+		<main class="content">
+			<div class="d-flex justify-content-between align-items-center mb-4">
+				<h1 class="h4"><i class="bi bi-people me-2"></i>Kelola Users</h1>
+			</div>
+
+			<div id="alert-container"></div>
+
+			<div class="card">
+				<div class="card-header bg-light border-0">
+					<h5 class="mb-0">Daftar Semua Users</h5>
+				</div>
+				<div class="card-body p-0">
+					<div class="table-responsive">
+						<table class="table table-hover mb-0">
+							<thead class="table-light">
+								<tr>
+									<th>Username</th>
+									<th>Email</th>
+									<th>Nama Lengkap</th>
+									<th>Role</th>
+									<th>Bergabung</th>
+									<th>Aksi</th>
+								</tr>
+							</thead>
+							<tbody id="users-table">
+								<tr><td colspan="6" class="text-center py-4">Memuat users...</td></tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+
+	<!-- Role Change Modal -->
+	<div class="modal fade" id="roleModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Ubah Role</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<input type="hidden" id="role-user-id">
+					<div class="mb-3">
+						<label for="role-select" class="form-label">Pilih Role</label>
+						<select class="form-select" id="role-select">
+							<option value="user">User</option>
+							<option value="admin">Admin</option>
+						</select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+					<button type="button" class="btn btn-primary" id="save-role-btn">Simpan</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		const roleModal = new bootstrap.Modal(document.getElementById('roleModal'));
+		let users = [];
+
+		function hidePageLoader() {
+			const loader = document.getElementById('page-loader');
+			if (loader) loader.style.display = 'none';
+		}
+
+		async function loadUsers() {
+			try {
+				const response = await fetch('api/auth.php?action=get_all_users');
+				
+				if (!response.ok) {
+					if (response.status === 401) {
+						window.location.href = 'login.html';
+						return;
+					}
+					throw new Error('Gagal memuat users');
+				}
+
+				users = await response.json();
+				renderUsers();
+			} catch (error) {
+				console.error('Error:', error);
+				showAlert('Gagal memuat users', 'danger');
+			} finally {
+				hidePageLoader();
+			}
+		}
+
+		function renderUsers() {
+			const tbody = document.getElementById('users-table');
+			
+			if (users.length === 0) {
+				tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Tidak ada users</td></tr>';
+				return;
+			}
+
+			tbody.innerHTML = users.map(user => `
+				<tr>
+					<td><strong>${user.username}</strong></td>
+					<td>${user.email}</td>
+					<td>${user.full_name || '-'}</td>
+					<td>
+						<span class="badge ${user.role === 'admin' ? 'bg-danger' : 'bg-secondary'}">
+							${user.role === 'admin' ? 'Admin' : 'User'}
+						</span>
+					</td>
+					<td>${new Date(user.created_at).toLocaleDateString('id-ID')}</td>
+					<td>
+						<button class="btn btn-sm btn-warning me-2" onclick="openRoleModal(${user.id}, '${user.role}')">
+							<i class="bi bi-pencil"></i>
+						</button>
+						<button class="btn btn-sm btn-danger" onclick="deleteUser(${user.id})">
+							<i class="bi bi-trash"></i>
+						</button>
+					</td>
+				</tr>
+			`).join('');
+		}
+
+		function openRoleModal(userId, currentRole) {
+			document.getElementById('role-user-id').value = userId;
+			document.getElementById('role-select').value = currentRole;
+			roleModal.show();
+		}
+
+		async function saveRole() {
+			const userId = parseInt(document.getElementById('role-user-id').value);
+			const role = document.getElementById('role-select').value;
+
+			try {
+				const response = await fetch('api/auth.php?action=change_user_role', {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({id: userId, role})
+				});
+
+				const result = await response.json();
+
+				if (response.ok) {
+					showAlert('✓ Role berhasil diubah', 'success');
+					roleModal.hide();
+					loadUsers();
+				} else {
+					showAlert('✗ ' + result.error, 'danger');
+				}
+			} catch (error) {
+				showAlert('✗ Terjadi kesalahan: ' + error.message, 'danger');
+			}
+		}
+
+		async function deleteUser(userId) {
+			if (!confirm('Yakin ingin menghapus user ini?')) return;
+
+			try {
+				const response = await fetch('api/auth.php?action=delete_user', {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({id: userId})
+				});
+
+				const result = await response.json();
+
+				if (response.ok) {
+					showAlert('✓ User berhasil dihapus', 'success');
+					loadUsers();
+				} else {
+					showAlert('✗ ' + result.error, 'danger');
+				}
+			} catch (error) {
+				showAlert('✗ Terjadi kesalahan: ' + error.message, 'danger');
+			}
+		}
+
+		function showAlert(message, type) {
+			const container = document.getElementById('alert-container');
+			container.innerHTML = `
+				<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+					${message}
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+			`;
+			setTimeout(() => {
+				container.innerHTML = '';
+			}, 5000);
+		}
+
+		document.getElementById('save-role-btn').addEventListener('click', saveRole);
+
+		document.getElementById('logout-btn').addEventListener('click', (e) => {
+			e.preventDefault();
+			if (confirm('Yakin ingin logout?')) {
+				localStorage.clear();
+				window.location.href = 'index.html';
+			}
+		});
+
+		loadUsers();
+	</script>
+</body>
+</html>

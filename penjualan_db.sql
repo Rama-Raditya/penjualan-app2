@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 19 Nov 2025 pada 07.17
+-- Waktu pembuatan: 19 Nov 2025 pada 14.17
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -44,6 +44,46 @@ INSERT INTO `kategori` (`id_kategori`, `kategori`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `orders`
+--
+
+CREATE TABLE `orders` (
+  `id` int(11) NOT NULL,
+  `order_id` varchar(50) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `subtotal` decimal(12,2) DEFAULT NULL,
+  `shipping_cost` decimal(10,2) DEFAULT NULL,
+  `tax` decimal(10,2) DEFAULT NULL,
+  `total` decimal(12,2) DEFAULT NULL,
+  `status` enum('pending','processing','shipped','delivered','cancelled') DEFAULT 'pending',
+  `shipping_method` varchar(100) DEFAULT NULL,
+  `customer_name` varchar(150) DEFAULT NULL,
+  `customer_phone` varchar(20) DEFAULT NULL,
+  `customer_address` text DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `order_items`
+--
+
+CREATE TABLE `order_items` (
+  `id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `product_title` varchar(255) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `subtotal` decimal(12,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `products`
 --
 
@@ -74,6 +114,34 @@ INSERT INTO `products` (`id`, `title`, `price`, `description`, `category`, `imag
 (11, 'Plus Men&amp;#039;s Light Blue Regular Fit Washed Jeans Stretchable', 200000.00, 'Make heads turn in this latest design of Urbano Plus Men&amp;#039;s Light Blue Regular Fit Shaded Washed Stretch Jeans, which brings the latest trend for the fashion conscious. High on style and quality, these uber cool &amp;amp; cult whisker-washed stretchable jeans are as versatile as they are comfortable - a must have in your wardrobe for all seasons. Perfect for casual &amp;amp; party wear, pair these in-vogue mid-rise jeans with any dark color Urbano Plus shirt or t-shirt, and never go out of style! So go ahead, stand apart from the crowd and create your own trends. And follow no one else but yourself. Urbano Plus - your go-to stylish and comfortable Plus size brand from Urbano Fashion.', 'Fashion', 'https://www.urbanofashion.com/cdn/shop/files/pluscfjeanp-001-lblue-1.jpg'),
 (12, 'SETELAN BAJU WAROK PONOROGO / BAJU REOG PONOROGO', 200000.00, 'Satu setel terdiri dari:\nPenadon\nKaos Reog Lurik\nCelana Kombor List Merah\nTali Kolor\n\nBahan berkualitas halus jahitan rapi\n\nNyaman dipakai Sejuk\nAsli Dikirim Dari Ponorogo\nUkuran S-M-L-XL-XXL', 'Fashion', 'https://img.lazcdn.com/g/p/55bed1c38bd3614663382961ee90777e.jpg_960x960q80.jpg_.webp');
 
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `full_name` varchar(150) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `address` text DEFAULT NULL,
+  `role` enum('user','admin') DEFAULT 'user',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `full_name`, `phone`, `address`, `role`, `created_at`, `updated_at`) VALUES
+(1, 'admin', 'admin@ramstore.com\r\n', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administrator', NULL, NULL, 'admin', '2025-11-19 12:18:24', '2025-11-19 12:18:24'),
+(2, 'rama', 'ramaraditya4371@gmail.com', '$2y$10$1qTiSYSNUV3/EuzD1Yq9E.8aysRjEgNRcUXvvAVAbuWULDkgZmo2m', 'muhammad rama raditya', '083131130557', 'Jl. Imam bonjol, Morosari, Sukorejo', 'user', '2025-11-19 12:28:45', '2025-11-19 12:28:45'),
+(3, 'bruce', 'br@mail.com', '$2y$10$DWyUbZ5OOYxZvOUrlkSQ4.S8cdKM.fgNSi7PbykqI6UvQX8MsNSUC', 'muhammad rama raditya', '083131130557', 'Jl. Imam bonjol, Morosari, Sukorejo', 'user', '2025-11-19 13:16:23', '2025-11-19 13:16:23');
+
 --
 -- Indexes for dumped tables
 --
@@ -85,11 +153,36 @@ ALTER TABLE `kategori`
   ADD PRIMARY KEY (`id_kategori`);
 
 --
+-- Indeks untuk tabel `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `order_id` (`order_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `order_id_2` (`order_id`);
+
+--
+-- Indeks untuk tabel `order_items`
+--
+ALTER TABLE `order_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `order_id` (`order_id`);
+
+--
 -- Indeks untuk tabel `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`),
   ADD KEY `category` (`category`);
+
+--
+-- Indeks untuk tabel `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT untuk tabel yang dibuang
@@ -102,10 +195,45 @@ ALTER TABLE `kategori`
   MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT untuk tabel `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT untuk tabel `order_items`
+--
+ALTER TABLE `order_items`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT untuk tabel `products`
 --
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT untuk tabel `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+--
+
+--
+-- Ketidakleluasaan untuk tabel `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Ketidakleluasaan untuk tabel `order_items`
+--
+ALTER TABLE `order_items`
+  ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

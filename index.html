@@ -395,11 +395,22 @@
 							<a class="nav-link" href="register.html">
 								<i class="bi bi-person-plus me-1"></i>Daftar
 							</a>
-						<li class="nav-item">
-							<a class="nav-link" href="login.html">
-								<i class="bi bi-box-arrow-in-right me-1"></i>Masuk
-							</a>
 						</li>
+						<!-- Conditional menu based on login status -->
+						<ul class="navbar-nav ms-auto">
+							<li class="nav-item" id="guest-menu" style="display:none">
+								<a class="nav-link" href="login.html"><i class="bi bi-box-arrow-in-right me-1"></i>Masuk</a>
+							</li>
+							<li class="nav-item" id="user-menu" style="display:none">
+								<a class="nav-link" href="profile.html"><i class="bi bi-person me-1"></i>Profil</a>
+							</li>
+							<li class="nav-item" id="history-menu" style="display:none">
+								<a class="nav-link" href="history.html"><i class="bi bi-receipt me-1"></i>Pesanan</a>
+							</li>
+							<li class="nav-item" id="admin-menu" style="display:none">
+								<a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
+							</li>
+						</ul>
 					</ul>
 				</div>
 			</div>
@@ -447,6 +458,20 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="page-loader.js"></script>
 	<script src="script.js"></script>
+	<script>
+  // Check user login status on page load
+  const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+  if (user.id) {
+    document.getElementById('guest-menu').style.display = 'none';
+    document.getElementById('user-menu').style.display = 'block';
+    document.getElementById('history-menu').style.display = 'block';
+    if (user.role === 'admin') {
+      document.getElementById('admin-menu').style.display = 'block';
+    }
+  } else {
+    document.getElementById('guest-menu').style.display = 'block';
+  }
+	</script>
 
 </body>
 </html>

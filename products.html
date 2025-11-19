@@ -1,150 +1,359 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
-	<title>Kelola Produk - RamStore</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-	<!DOCTYPE html>
-	<html lang="id">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width,initial-scale=1" />
-		<title>Admin - Kelola Produk</title>
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-		<link rel="stylesheet" href="style.css">
-		<style>
-			:root{--accent:#ff7a18;--muted:#6b7280}
-			body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial}
-			.sidebar{width:250px;min-height:100vh;background:#fff;border-right:1px solid #e9ecef}
-			.sidebar .nav-link{color:#495057}
-			.sidebar .nav-link.active{background:linear-gradient(90deg,#ff7a18,#ff914d);color:#fff}
-			.content{padding:28px}
-			.brand{padding:20px;border-bottom:1px solid #e9ecef;font-weight:700}
-			.btn-primary{background:var(--accent)!important;border-color:var(--accent)!important}
-			.btn-primary:hover{background:#ff914d!important}
-			.product-img-thumb{width:50px;height:50px;object-fit:cover;border-radius:6px}
-			.form-label{font-weight:600;color:#1f2937}
-			.form-control,.form-select{border-radius:6px;border:1px solid #e5e7eb}
-		</style>
-	</head>
-	<body>
-		<div class="d-flex">
-			<aside class="sidebar">
-				<div class="brand d-flex align-items-center">
-					<i class="bi bi-shop me-2 fs-4"></i>
-					<div>
-						<div>RamStore</div>
-						<small class="text-muted">Admin Panel</small>
-					</div>
-				</div>
-				<nav class="nav flex-column p-3">
-					<a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
-					<a class="nav-link active" href="products.html"><i class="bi bi-box-seam me-2"></i>Kelola Produk</a>
-					<a class="nav-link" href="orders.html"><i class="bi bi-receipt me-2"></i>Kelola Pesanan</a>
-					<a class="nav-link" href="users.html"><i class="bi bi-people me-2"></i>Kelola User</a>
-					<hr>
-					<a class="nav-link" href="index.html"><i class="bi bi-house-door me-2"></i>Kunjungi Toko</a>
-					<a class="nav-link text-danger" href="#" id="logout-btn"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
-				</nav>
-			</aside>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin - Kelola Produk - RamStore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #16a34a;
+            --warning: #ea580c;
+            --danger: #dc2626;
+            --light-bg: #f8fafc;
+            --dark-text: #1e293b;
+            --gray-border: #e2e8f0;
+        }
+        
+        body {
+            font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+        }
 
-			<main class="flex-grow-1 content">
-				<div class="d-flex justify-content-between align-items-center mb-4">
-					<h1 class="h4"><i class="bi bi-box-seam me-2"></i>Kelola Produk</h1>
-					<div>
-						<button class="btn btn-outline-secondary me-2 d-md-none" id="sidebarToggle"><i class="bi bi-list"></i></button>
-						<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal">
-							<i class="bi bi-plus-circle me-2"></i>Tambah Produk
-						</button>
-					</div>
-				</div>
+        /* Sidebar Styling */
+        .sidebar {
+            width: 240px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border-right: 1px solid var(--gray-border);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
 
-				<div id="alert-container"></div>
+        .sidebar .brand {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--gray-border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-				<div class="card">
-					<div class="table-responsive">
-						<table class="table table-hover mb-0">
-							<thead class="table-light">
-								<tr>
-									<th>ID</th>
-									<th>Gambar</th>
-									<th>Nama</th>
-									<th>Kategori</th>
-									<th>Harga</th>
-									<th>Aksi</th>
-								</tr>
-							</thead>
-							<tbody id="products-table">
-								<tr><td colspan="6" class="text-center py-4">Memuat produk...</td></tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</main>
-		</div>
+        .sidebar .brand i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
 
-		<!-- Product Modal -->
-		<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="modal-title">Tambah Produk</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<form id="product-form">
-						<div class="modal-body">
-							<input type="hidden" id="product-id" value="">
-							<div class="mb-3">
-								<label for="product-title" class="form-label">Nama Produk</label>
-								<input type="text" class="form-control" id="product-title" name="title" required>
-							</div>
-							<div class="row">
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label for="product-price" class="form-label">Harga (Rp)</label>
-										<input type="number" class="form-control" id="product-price" name="price" required>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="mb-3">
-										<label for="product-stock" class="form-label">Stok</label>
-										<input type="number" class="form-control" id="product-stock" name="stock" required>
-									</div>
-								</div>
-							</div>
-							<div class="mb-3">
-								<label for="product-category" class="form-label">Kategori</label>
-								<select class="form-select" id="product-category" name="category" required>
-									<option value="">-- Pilih Kategori --</option>
-								</select>
-							</div>
-							<div class="mb-3">
-								<label for="product-image" class="form-label">URL Gambar</label>
-								<input type="url" class="form-control" id="product-image" name="image" required>
-							</div>
-							<div class="mb-3">
-								<label for="product-description" class="form-label">Deskripsi</label>
-								<textarea class="form-control" id="product-description" name="description" rows="4" required></textarea>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-							<button type="submit" class="btn btn-primary">
-								<i class="bi bi-check-circle me-2"></i><span id="btn-submit-text">Simpan</span>
-							</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
+        .sidebar .brand div {
+            line-height: 1.2;
+        }
 
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-		<script src="page-loader.js"></script>
-		<script src="products.js"></script>
-	</body>
-	</html>
+        .sidebar .brand small {
+            color: var(--secondary);
+            font-size: 0.75rem;
+        }
+
+        .sidebar .nav-link {
+            color: var(--dark-text);
+            padding: 12px 20px;
+            margin: 2px 0;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar .nav-link:hover:not(.active) {
+            background-color: rgba(37, 99, 235, 0.08);
+            color: var(--primary);
+        }
+
+        .sidebar .nav-link.active {
+            background: linear-gradient(90deg, var(--primary), #3b82f6);
+            color: white;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar hr {
+            border-top: 1px solid var(--gray-border);
+            margin: 12px 20px;
+        }
+
+        /* Main Content Styling */
+        .content {
+            padding: 32px;
+            background-color: var(--light-bg);
+        }
+
+        .content h1 {
+            color: var(--dark-text);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .content h1 i {
+            color: var(--primary);
+        }
+
+        /* Card and Table Styling */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #f1f5f9;
+            border-bottom: 2px solid var(--gray-border);
+            color: var(--dark-text);
+            font-weight: 500;
+            padding: 16px 20px;
+        }
+
+        .table tbody td {
+            padding: 16px 20px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(37, 99, 235, 0.02);
+        }
+
+        .product-img-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Styling */
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            border-color: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-outline-secondary {
+            color: var(--secondary);
+            border-color: var(--gray-border);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--gray-border);
+            color: var(--dark-text);
+        }
+
+        /* Form Elements */
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid var(--gray-border);
+            padding: 12px 16px;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-text);
+            margin-bottom: 8px;
+        }
+
+        /* Modal Styling */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--gray-border);
+            padding: 20px 24px;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--gray-border);
+            padding: 20px 24px;
+        }
+
+        /* Alert Container */
+        #alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            max-width: 350px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 767px) {
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                top: 0;
+                bottom: 0;
+                z-index: 1040;
+                transition: left 0.25s;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <aside class="sidebar">
+            <div class="brand d-flex align-items-center">
+                <i class="bi bi-shop me-2"></i>
+                <div>
+                    <div>RamStore</div>
+                    <small class="text-muted">Admin Panel</small>
+                </div>
+            </div>
+            <nav class="nav flex-column p-3">
+                <a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+                <a class="nav-link active" href="products.html"><i class="bi bi-box-seam me-2"></i>Kelola Produk</a>
+                <a class="nav-link" href="orders.html"><i class="bi bi-receipt me-2"></i>Kelola Pesanan</a>
+                <a class="nav-link" href="users.html"><i class="bi bi-people me-2"></i>Kelola User</a>
+                <hr>
+                <a class="nav-link" href="index.html"><i class="bi bi-house-door me-2"></i>Kunjungi Toko</a>
+                <a class="nav-link text-danger" href="#" id="logout-btn"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+            </nav>
+        </aside>
+
+        <main class="flex-grow-1 content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h4"><i class="bi bi-box-seam me-2"></i>Kelola Produk</h1>
+                <div>
+                    <button class="btn btn-outline-secondary me-2 d-md-none" id="sidebarToggle"><i class="bi bi-list"></i></button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal">
+                        <i class="bi bi-plus-circle me-2"></i>Tambah Produk
+                    </button>
+                </div>
+            </div>
+
+            <div id="alert-container"></div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Gambar</th>
+                                <th>Nama</th>
+                                <th>Kategori</th>
+                                <th>Harga</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table">
+                            <tr><td colspan="6" class="text-center py-4">Memuat produk...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">Tambah Produk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="product-form">
+                    <div class="modal-body">
+                        <input type="hidden" id="product-id" value="">
+                        <div class="mb-3">
+                            <label for="product-title" class="form-label">Nama Produk</label>
+                            <input type="text" class="form-control" id="product-title" name="title" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="product-price" class="form-label">Harga (Rp)</label>
+                                    <input type="number" class="form-control" id="product-price" name="price" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="product-stock" class="form-label">Stok</label>
+                                    <input type="number" class="form-control" id="product-stock" name="stock" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="product-category" class="form-label">Kategori</label>
+                            <select class="form-select" id="product-category" name="category" required>
+                                <option value="">-- Pilih Kategori --</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="product-image" class="form-label">URL Gambar</label>
+                            <input type="url" class="form-control" id="product-image" name="image" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="product-description" class="form-label">Deskripsi</label>
+                            <textarea class="form-control" id="product-description" name="description" rows="4" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i><span id="btn-submit-text">Simpan</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="page-loader.js"></script>
+    <script src="products.js"></script>
+</body>
+</html>

@@ -1,20 +1,22 @@
-// Simple users management with mock data
-const users = [
-    {id:1,name:'Budi',email:'budi@example.com',phone:'081234567890',joined:'2025-01-10', orders:['ORD001','ORD003']},
-    {id:2,name:'Siti',email:'siti@example.com',phone:'082345678901',joined:'2025-02-22', orders:['ORD002']},
-];
+// Users management — fetch users from backend and render
+let usersData = [];
 
 function renderUsers(){
     const tbody = document.getElementById('users-table');
     tbody.innerHTML = '';
-    users.forEach((u,i) => {
+    if (!usersData || usersData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Tidak ada user.</td></tr>';
+        return;
+    }
+
+    usersData.forEach((u,i) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${i+1}</td>
-            <td>${u.name}</td>
-            <td>${u.email}</td>
-            <td>${u.phone}</td>
-            <td>${u.joined}</td>
+            <td>${escapeHtml(u.name || '')}</td>
+            <td>${escapeHtml(u.email || '')}</td>
+            <td>${escapeHtml(u.phone || '')}</td>
+            <td>${u.joined ? escapeHtml(u.joined) : '-'}</td>
             <td>
                 <div class="btn-group">
                     <button class="btn btn-sm btn-outline-primary" onclick="viewOrders(${u.id})">Lihat Pesanan</button>
@@ -26,19 +28,24 @@ function renderUsers(){
     });
 }
 
+function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, tag => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"
+    }[tag]));
+}
+
 function viewOrders(userId){
-    const u = users.find(x => x.id === userId);
+    // This example backend does not include order listing for users yet.
+    // For now show a placeholder message.
+    const u = usersData.find(x => x.id === userId);
     if(!u) return;
-    alert('Pesanan user ' + u.name + ':\n' + (u.orders.length ? u.orders.join('\n') : 'Tidak ada pesanan'));
+    alert('Fitur lihat pesanan untuk user ' + (u.name || userId) + ' belum diimplementasikan di server.');
 }
 
 function deleteUser(userId){
-    const idx = users.findIndex(x => x.id === userId);
-    if(idx === -1) return;
-    if(!confirm('Hapus user ini?')) return;
-    users.splice(idx,1);
-    renderUsers();
-    showAlert('User dihapus', 'success');
+    // Deleting users requires a backend endpoint. Show info for now.
+    if(!confirm('Hapus user ini? (perlu endpoint server)')) return;
+    showAlert('Penghapusan sementara tidak didukung. Implementasikan endpoint server untuk menghapus user.', 'warning');
 }
 
 function showAlert(message, type='info'){
@@ -46,6 +53,31 @@ function showAlert(message, type='info'){
     wrap.innerHTML = `<div class="alert alert-${type} alert-dismissible" role="alert">${message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
 }
 
+function fetchUsers(){
+    fetch('api/api.php?action=get_users')
+        .then(async r => {
+            const text = await r.text();
+            // Try to parse JSON, but if server returned HTML (error page) handle gracefully
+            try {
+                const data = JSON.parse(text);
+                if (!Array.isArray(data)) {
+                    usersData = [];
+                } else {
+                    usersData = data;
+                }
+                renderUsers();
+            } catch (err) {
+                console.error('Failed to parse JSON from /api/api.php?action=get_users', err);
+                console.error('Server response (first 10k chars):', text.substring(0, 10000));
+                showAlert('Gagal memuat data user dari server. Periksa console (Network / response) untuk detail.', 'danger');
+            }
+        })
+        .catch(err => {
+            console.error('Network or fetch error while loading users:', err);
+            showAlert('Gagal memuat data user dari server (network).', 'danger');
+        });
+}
+
 document.addEventListener('DOMContentLoaded', function(){
-    renderUsers();
+    fetchUsers();
 });
